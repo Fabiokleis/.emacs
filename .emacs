@@ -3,81 +3,67 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(global-linum-mode t)
-(setq-default indent-tabs-mode nil)
-(setq-default tab-always-indent nil)
-(setq-default tab-always-indent 'complete)
-(setq-default tab-width 4)
-(setq tab-width 4)
 (set-face-attribute 'default nil :height 130)
+(global-display-line-numbers-mode t)
+(setq make-backup-files nil)
+;; Let's define the list of required package in a new variable: package-list
+(setq package-list '(typescript-mode tree-sitter tree-sitter-langs lsp-mode lsp-ui))
 
 
+;; `package` feature is part of Emacs builtin packages
+;; This feature will be useful to install other packages like `dap-mode`
 (require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives
-	     '("melpa" . "https://melpa.org/packages/"))
+
+;; Add Melpa to the list of Emacs package repositories
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+
+;; Load Emacs Lisp packages, and activate them
 (package-initialize)
 
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
 
-(use-package try
-  :ensure t)
+;; package-archive-contents variable
+;; holds the list of known packages
+(unless package-archive-contents (package-refresh-contents))
 
-(use-package which-key
-  :ensure t
-  :config (which-key-mode))
+;; If a package of package-list is not installed, install it
+(dolist (package package-list)
+  (unless (package-installed-p package) (package-install package)))
 
-(use-package powerline
-  :ensure t
-  :config
-  (powerline-center-theme))
+(cua-mode t)
+(setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
+(transient-mark-mode 1) ;; No region when it is not highlighted
+(setq cua-keep-region-after-copy t) ;; Standard Windows behaviour
 
-(use-package moe-theme
-  :ensure t)
-
-(use-package all-the-icons
-  :ensure t
-  :if (display-graphic-p))
-
-(use-package auto-complete
-  :ensure t
-  :init
-  (progn
-    (ac-config-default)
-    (global-auto-complete-mode t)))
-
-(use-package lsp-mode
-  :init
-  (setq lsp-keymap-prefix "C-c l")
-  :hook (
-         (python-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :commands lsp)
-        
-(use-package lsp-ui :commands lsp-ui-mode)
-
-(use-package nordic-night-theme
-  :ensure t
-  :config
-  (load-theme 'nordic-night t))
-
-(setq auto-save-default nil)
-(setq make-backup-files nil)
+(require 'lsp-mode)
+(add-hook 'typescript-mode-hook 'lsp-deferred)
+(add-hook 'javascript-mode-hook 'lsp-deferred)
 
 
+					; Loading tree-sitter package
+(require 'tree-sitter-langs)
+(require 'tree-sitter)
 
-(add-to-list 'load-path "/home/nhambu/.emacs.d/neotree")
-(require 'neotree)
-(setq neo-smart-open t)
-(setq neo-theme (if (display-graphic-p) 'icons 'arrow))
-(global-set-key [f8] 'neotree-toggle) ;; atom key
+;; Activate tree-sitter globally (minor mode registered on every buffer)
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
-;;(require 'powerline)
-;;(require 'moe-theme)
-;;(powerline-moe-theme)
-;;(setq moe-theme-highlight-buffer-id t)
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+(load-theme 'dracula t)
+
+
+(require 'prettier-js)
+(add-hook 'typescript-mode-hook 'prettier-js-mode)
+(setq prettier-js-args '(
+			 "--single-quote"    "true"
+			 "--trailing-comma"  "es5"
+			 "--bracket-spacing" "true"
+			 "--single-quote"    "true"
+			 "--semi"            "true"
+			 "--print-width"     "120"
+			 "--tab-witdh"        "2"
+			 "--use-tabs"          "false"
+			 ))
+
 
 
 (custom-set-variables
@@ -85,8 +71,9 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(dracula-alternate-mode-line-and-minibuffer t)
  '(package-selected-packages
-   '(lsp-mode nordic-night-theme all-the-icons moe-theme powerline neotree auto-complete which-key try use-package)))
+   '(apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
