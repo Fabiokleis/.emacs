@@ -6,6 +6,7 @@
 (set-face-attribute 'default nil :height 130)
 (global-display-line-numbers-mode t)
 (setq make-backup-files nil)
+(setq column-number-mode t)
 ;; Let's define the list of required package in a new variable: package-list
 (setq package-list '(typescript-mode tree-sitter tree-sitter-langs lsp-mode lsp-ui))
 
@@ -45,6 +46,7 @@
 (add-hook 'javascript-mode-hook 'lsp-deferred)
 (add-hook 'lua-mode-hook 'lsp-deferred)
 (add-hook 'rust-mode-hook 'lsp-deferred)
+(add-hook 'go-mode-hook 'lsp-deferred)
 
 (use-package lsp-mode
   :ensure
@@ -116,13 +118,19 @@
 			 "--single-quote"    "true"
 			 "--trailing-comma"  "es5"
 			 "--bracket-spacing" "true"
-			 "--single-quote"    "true"
 			 "--semi"            "true"
-			 "--print-width"     "120"
-			 "--tab-witdh"        "2"
+			 "--print-width"     "80"
+			 "--tab-width"        "4"
 			 "--use-tabs"          "false"
 			 ))
 
+
+
+
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 
 (custom-set-variables
@@ -131,7 +139,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
+   '(protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
