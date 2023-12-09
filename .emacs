@@ -10,6 +10,8 @@
 ;; Let's define the list of required package in a new variable: package-list
 (setq package-list '(typescript-mode tree-sitter tree-sitter-langs lsp-mode lsp-ui))
 
+(set-frame-parameter (selected-frame) 'alpha '(90 . 50))
+(add-to-list 'default-frame-alist '(alpha . (90 . 50)))
 
 ;; `package` feature is part of Emacs builtin packages
 ;; This feature will be useful to install other packages like `dap-mode`
