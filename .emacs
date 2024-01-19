@@ -8,7 +8,7 @@
 (setq make-backup-files nil)
 (setq column-number-mode t)
 ;; Let's define the list of required package in a new variable: package-list
-(setq package-list '(typescript-mode tree-sitter tree-sitter-langs lsp-mode lsp-ui))
+(setq package-list '(elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme))
 
 
 ;; `package` feature is part of Emacs builtin packages
@@ -135,13 +135,23 @@
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 
+(custom-set-faces
+  '(markdown-header-face-1 ((t (:inherit markdown-header-face :height 1.8 :foreground "#A3BE8C" :weight extra-bold))))
+  '(markdown-header-face-2 ((t (:inherit markdown-header-face :height 1.4 :foreground "#EBCB8B" :weight extra-bold))))
+  '(markdown-header-face-3 ((t (:inherit markdown-header-face :height 1.2 :foreground "#D08770" :weight extra-bold))))
+  '(markdown-header-face-4 ((t (:inherit markdown-header-face :height 1.15 :foreground "#BF616A" :weight extra-bold))))
+  '(markdown-header-face-5 ((t (:inherit markdown-header-face :height 1.11 :foreground "#b48ead" :weight extra-bold))))
+  '(markdown-header-face-6 ((t (:inherit markdown-header-face :height 1.06 :foreground "#5e81ac" :weight extra-bold)))))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("9724b3abaf500b227faa036dcf817abed9764802835ba6e8d1e475c877205157" default))
  '(package-selected-packages
-   '(elixir-ts-mode elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
+   '(rebecca-theme elixir-ts-mode elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
