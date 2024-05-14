@@ -150,19 +150,21 @@
               (reusable-frames . visible)
               (window-height   . 0.33)))
 
-;; (use-package erlang
-;;   :load-path ("<PATH TO OTP>/lib/erlang/lib/tools-3.0/emacs/")
-;;   :mode (("\\.erl?$" . erlang-mode)
-;;          ("rebar\\.config$" . erlang-mode)
-;;          ("relx\\.config$" . erlang-mode)
-;;          ("sys\\.config\\.src$" . erlang-mode)
-;;          ("sys\\.config$" . erlang-mode)
-;;          ("\\.config\\.src?$" . erlang-mode)
-;;          ("\\.config\\.script?$" . erlang-mode)
-;;          ("\\.hrl?$" . erlang-mode)
-;;          ("\\.app?$" . erlang-mode)
-;;          ("\\.app.src?$" . erlang-mode)
-;;          ("\\Emakefile" . erlang-mode)))
+
+(use-package erlang
+  :load-path ("/usr/lib64/erlang/lib/tools-3.5./emacs")
+  :mode (("\\.erl?$" . erlang-mode)
+         ("rebar\\.config$" . erlang-mode)
+         ("relx\\.config$" . erlang-mode)
+         ("sys\\.config\\.src$" . erlang-mode)
+         ("sys\\.config$" . erlang-mode)
+         ("\\.config\\.src?$" . erlang-mode)
+         ("\\.config\\.script?$" . erlang-mode)
+         ("\\.hrl?$" . erlang-mode)
+         ("\\.app?$" . erlang-mode)
+         ("\\.app.src?$" . erlang-mode)
+         ("\\Emakefile" . erlang-mode)))
+
 
 (require 'dashboard)
 (dashboard-setup-startup-hook)
