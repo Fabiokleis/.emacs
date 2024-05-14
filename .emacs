@@ -40,8 +40,14 @@
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
 (load-theme 'kanagawa t)
 
+(use-package lsp-pyright
+  :ensure t
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
 
 (require 'lsp-mode)
+(add-hook 'erlang-mode-hook #'lsp)
 (add-hook 'typescript-mode-hook 'lsp-deferred)
 (add-hook 'javascript-mode-hook 'lsp-deferred)
 (add-hook 'lua-mode-hook 'lsp-deferred)
@@ -135,6 +141,32 @@
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 
+;; Always show diagnostics at the bottom, using 1/3 of the available space
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*Flycheck errors*" eos)
+              (display-buffer-reuse-window
+               display-buffer-in-side-window)
+              (side            . bottom)
+              (reusable-frames . visible)
+              (window-height   . 0.33)))
+
+;; (use-package erlang
+;;   :load-path ("<PATH TO OTP>/lib/erlang/lib/tools-3.0/emacs/")
+;;   :mode (("\\.erl?$" . erlang-mode)
+;;          ("rebar\\.config$" . erlang-mode)
+;;          ("relx\\.config$" . erlang-mode)
+;;          ("sys\\.config\\.src$" . erlang-mode)
+;;          ("sys\\.config$" . erlang-mode)
+;;          ("\\.config\\.src?$" . erlang-mode)
+;;          ("\\.config\\.script?$" . erlang-mode)
+;;          ("\\.hrl?$" . erlang-mode)
+;;          ("\\.app?$" . erlang-mode)
+;;          ("\\.app.src?$" . erlang-mode)
+;;          ("\\Emakefile" . erlang-mode)))
+
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -153,8 +185,10 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("9724b3abaf500b227faa036dcf817abed9764802835ba6e8d1e475c877205157" default))
+   '("249e100de137f516d56bcf2e98c1e3f9e1e8a6dce50726c974fa6838fbfcec6b" "0170347031e5dfa93813765bc4ef9269a5e357c0be01febfa3ae5e5fcb351f09" "9cd57dd6d61cdf4f6aef3102c4cc2cfc04f5884d4f40b2c90a866c9b6267f2b3" "b95f61aa5f8a54d494a219fcde9049e23e3396459a224631e1719effcb981dbd" "06ed754b259cb54c30c658502f843937ff19f8b53597ac28577ec33bb084fa52" "260f523c89c6c1afe2d16f810ff555fea00d1f28c84112ec4ed8f388b9c143f9" "788121c96b7a9b99a6f35e53b7c154991f4880bb0046a80330bb904c1a85e275" "b5fab52f16546a15f171e6bd450ff11f2a9e20e5ac7ec10fa38a14bb0c67b9ab" "74e2ed63173b47d6dc9a82a9a8a6a9048d89760df18bc7033c5f91ff4d083e37" "9724b3abaf500b227faa036dcf817abed9764802835ba6e8d1e475c877205157" default))
  '(package-selected-packages
-   '(eshell-vterm vterm rebecca-theme elixir-ts-mode elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme)))
+   '(projectile page-break-lines all-the-icons nerd-icons dashboard python-isort lsp-pyright markdown-preview-mode scala-mode docker-compose-mode kaolin-themes eshell-vterm vterm rebecca-theme elixir-ts-mode elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode dracula-theme))
+ '(warning-suppress-types '((comp))))
 
 (put 'upcase-region 'disabled nil)
+(put 'downcase-region 'disabled nil)
