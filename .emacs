@@ -3,7 +3,12 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(set-face-attribute 'default nil :height 130)
+(set-face-attribute 'default nil :height 120)
+;;(set-face-attribute 'default nil :font "SF Mono" :height 130)
+;; (set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
+;;(set-face-attribute 'default nil :font "Hack NerdFont" :height 120)
+;;(set-face-attribute 'default nil :font "MesloLGL Nerd Font" :height 120)
+
 (global-display-line-numbers-mode t)
 (setq make-backup-files nil)
 (setq column-number-mode t)
@@ -22,7 +27,6 @@
 ;; holds the list of known packages
 (unless package-archive-contents (package-refresh-contents))
 
-
 (cua-mode t)
 (setq cua-auto-tabify-rectangles nil) ;; Don't tabify after rectangle commands
 (transient-mark-mode 1) ;; No region when it is not highlighted
@@ -33,8 +37,55 @@
 
 (add-hook 'after-init-hook 'global-company-mode)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes")
+;;(setq kanagawa-theme-custom-colors '((sumi-ink-1b "#0A0E14")))
 (load-theme 'kanagawa t)
+(use-package kanagawa-theme
+  :ensure t
+  :preface
+  (setq kanagawa-theme-custom-colors '((sumi-ink-1b "#0A0E14")))
+  :config
+  (load-theme 'kanagawa t))
+
+(require 'wakatime-mode)
+(global-wakatime-mode)
+;(load-theme 'rebecca t)
+     
+;;   (ligature-set-ligatures 't '("www"))
+;;   ;; Enable traditional ligature support in eww-mode, if the
+;;   ;; `variable-pitch' face supports it
+;;   (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
+;;   ;; Enable all Cascadia Code ligatures in programming modes
+;;   (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
+;;                                        ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
+;;                                        "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
+;;                                        "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
+;;                                        "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
+;;                                        "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
+;;                                        "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
+;;                                        "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
+;;                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
+;;                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
+;;                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
+;;                                        "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
+;;                                        "\\\\" "://"))
+;;   ;; Enables ligature checks globally in all buffers. You can also do it
+;;   ;; per mode with `ligature-mode'.
+;;   (global-ligature-mode t))
+
+(use-package lsp-mode
+  :ensure t
+  :config
+  (setq lsp-modeline-code-actions-segments '(count icon name))
+
+  :init
+  '(lsp-mode))
+
+
+(use-package elixir-mode
+  :ensure t
+  :custom
+  (lsp-elixir-server-command '("~/git_hub/lexical/_build/dev/package/lexical/bin/start_lexical.sh")))
+
 
 (require 'lsp-mode)
 (add-hook 'erlang-mode-hook #'lsp)
@@ -44,8 +95,15 @@
 (add-hook 'rust-mode-hook 'lsp-deferred)
 (add-hook 'go-mode-hook 'lsp-deferred)
 (add-hook 'elixir-mode-hook 'lsp-deferred)
+(add-hook 'nix-mode-hook 'lsp-deferred)
+
+
 ;;(add-hook 'python-mode-hook 'lsp-deferred)
 
+
+;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
+(add-hook 'elixir-mode-hook
+          (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
 
 (use-package lsp-pyright ;; Python LSP
   :ensure t
@@ -70,6 +128,12 @@
   (lsp-ui-sideline-show-hover t)
   (lsp-ui-doc-enable nil))
 
+				; Loading tree-sitter package
+(require 'tree-sitter-langs)
+(require 'tree-sitter)
+;; Activate tree-sitter globally (minor mode registered on every buffer)
+(global-tree-sitter-mode)
+(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 (defun lsp-go-install-save-hooks ()
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
@@ -136,14 +200,29 @@
  '(markdown-header-face-5 ((t (:inherit markdown-header-face :height 1.11 :foreground "#b48ead" :weight extra-bold))))
  '(markdown-header-face-6 ((t (:inherit markdown-header-face :height 1.06 :foreground "#5e81ac" :weight extra-bold)))))
 
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("9724b3abaf500b227faa036dcf817abed9764802835ba6e8d1e475c877205157" "2793a4c110b68c57c4c44c587a456381aa4eaed8fd7d1df4831b4f3d5f2005ab" default))
+ '(ignored-local-variable-values
+   '((eval and buffer-file-name
+	   (not
+	    (eq major-mode 'package-recipe-mode))
+	   (or
+	    (require 'package-recipe-mode nil t)
+	    (let
+		((load-path
+		  (cons "../package-build" load-path)))
+	      (require 'package-recipe-mode nil t)))
+	   (package-recipe-mode))))
  '(package-selected-packages
-   '(lsp-pyright yasnippet which-key python-mode projectile page-break-lines all-the-icons nerd-icons dashboard python-isort markdown-preview-mode scala-mode docker-compose-mode eshell-vterm vterm elixir-ts-mode elixir-mode alchemist erlang dockerfile-mode protobuf-mode go-mode company tide lua-mode rust-mode kanagawa-theme apheleia lsp-ui lsp-mode tree-sitter-langs tree-sitter typescript-mode))
- '(warning-suppress-types '((comp))))
+   '(treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company))
+ '(wakatime-api-key "#put waka token here")
+ '(wakatime-cli-path "~/.wakatime/wakatime-cli"))
 
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
