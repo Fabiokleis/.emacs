@@ -36,16 +36,11 @@
 (which-key-mode)
 
 (add-hook 'after-init-hook 'global-company-mode)
-
+(ido-mode)
 ;;(setq kanagawa-theme-custom-colors '((sumi-ink-1b "#0A0E14")))
-(load-theme 'kanagawa t)
-(use-package kanagawa-theme
-  :ensure t
-  :preface
-  (setq kanagawa-theme-custom-colors '((sumi-ink-1b "#0A0E14")))
-  :config
-  (load-theme 'kanagawa t))
-
+(setq kanagawa-themes-custom-colors '((bg "#2A2A37") (bg-m3 "#2A2A37")))
+(require 'kanagawa-themes)
+(load-theme 'kanagawa-wave t)
 (require 'wakatime-mode)
 (global-wakatime-mode)
 ;(load-theme 'rebecca t)
@@ -220,7 +215,7 @@
 	      (require 'package-recipe-mode nil t)))
 	   (package-recipe-mode))))
  '(package-selected-packages
-   '(treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company))
+   '(ido-mode treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company))
  '(wakatime-api-key "#put waka token here")
  '(wakatime-cli-path "~/.wakatime/wakatime-cli"))
 
