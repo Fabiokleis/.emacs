@@ -3,9 +3,10 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(set-face-attribute 'default nil :height 120)
+;;(set-face-attribute 'default nil :height 130)
+(set-face-attribute 'default nil :font "SourceCode Pro" :height 130)
 ;;(set-face-attribute 'default nil :font "SF Mono" :height 130)
-;; (set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
+;;(set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
 ;;(set-face-attribute 'default nil :font "Hack NerdFont" :height 120)
 ;;(set-face-attribute 'default nil :font "MesloLGL Nerd Font" :height 120)
 
@@ -35,85 +36,47 @@
 (require 'which-key)
 (which-key-mode)
 
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (add-hook 'after-init-hook 'global-company-mode)
 (ido-mode)
-;;(setq kanagawa-theme-custom-colors '((sumi-ink-1b "#0A0E14")))
+
+;;(require 'kanagawa-themes)
+
+
 (setq kanagawa-themes-custom-colors '((bg "#2A2A37") (bg-m3 "#2A2A37")))
+(add-to-list 'load-path "~/.emacs.d/themes/kanagawa-emacs")
 (require 'kanagawa-themes)
 (load-theme 'kanagawa-wave t)
-(require 'wakatime-mode)
-(global-wakatime-mode)
-;(load-theme 'rebecca t)
-     
-;;   (ligature-set-ligatures 't '("www"))
-;;   ;; Enable traditional ligature support in eww-mode, if the
-;;   ;; `variable-pitch' face supports it
-;;   (ligature-set-ligatures 'eww-mode '("ff" "fi" "ffi"))
-;;   ;; Enable all Cascadia Code ligatures in programming modes
-;;   (ligature-set-ligatures 'prog-mode '("|||>" "<|||" "<==>" "<!--" "####" "~~>" "***" "||=" "||>"
-;;                                        ":::" "::=" "=:=" "===" "==>" "=!=" "=>>" "=<<" "=/=" "!=="
-;;                                        "!!." ">=>" ">>=" ">>>" ">>-" ">->" "->>" "-->" "---" "-<<"
-;;                                        "<~~" "<~>" "<*>" "<||" "<|>" "<$>" "<==" "<=>" "<=<" "<->"
-;;                                        "<--" "<-<" "<<=" "<<-" "<<<" "<+>" "</>" "###" "#_(" "..<"
-;;                                        "..." "+++" "/==" "///" "_|_" "www" "&&" "^=" "~~" "~@" "~="
-;;                                        "~>" "~-" "**" "*>" "*/" "||" "|}" "|]" "|=" "|>" "|-" "{|"
-;;                                        "[|" "]#" "::" ":=" ":>" ":<" "$>" "==" "=>" "!=" "!!" ">:"
-;;                                        ">=" ">>" ">-" "-~" "-|" "->" "--" "-<" "<~" "<*" "<|" "<:"
-;;                                        "<$" "<=" "<>" "<-" "<<" "<+" "</" "#{" "#[" "#:" "#=" "#!"
-;;                                        "##" "#(" "#?" "#_" "%%" ".=" ".-" ".." ".?" "+>" "++" "?:"
-;;                                        "?=" "?." "??" ";;" "/*" "/=" "/>" "//" "__" "~~" "(*" "*)"
-;;                                        "\\\\" "://"))
-;;   ;; Enables ligature checks globally in all buffers. You can also do it
-;;   ;; per mode with `ligature-mode'.
-;;   (global-ligature-mode t))
 
-(use-package lsp-mode
-  :ensure t
-  :config
-  (setq lsp-modeline-code-actions-segments '(count icon name))
+;; (use-package lsp-mode
+;;   :ensure t
+;;   :config
+;;   (setq lsp-modeline-code-actions-segments '(count icon name))
 
-  :init
-  '(lsp-mode))
-
-
-(use-package elixir-mode
-  :ensure t
-  :custom
-  (lsp-elixir-server-command '("~/git_hub/lexical/_build/dev/package/lexical/bin/start_lexical.sh")))
-
+;;   :init
+;;   '(lsp-mode))
 
 (require 'lsp-mode)
+(add-hook 'go-mode-hook #'lsp-deferred)
+;;(add-hook 'go-mode-hook #'yas-minor-mode)
 (add-hook 'erlang-mode-hook #'lsp)
 (add-hook 'typescript-mode-hook 'lsp-deferred)
 (add-hook 'javascript-mode-hook 'lsp-deferred)
-(add-hook 'lua-mode-hook 'lsp-deferred)
-(add-hook 'rust-mode-hook 'lsp-deferred)
-(add-hook 'go-mode-hook 'lsp-deferred)
 (add-hook 'elixir-mode-hook 'lsp-deferred)
 (add-hook 'nix-mode-hook 'lsp-deferred)
 
 
-;;(add-hook 'python-mode-hook 'lsp-deferred)
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t))
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 
 ;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
 (add-hook 'elixir-mode-hook
           (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
-
-(use-package lsp-pyright ;; Python LSP
-  :ensure t
-  :hook
-  ((python-mode . (lambda ()
-		    (require 'lsp-pyright)
-                    (lsp-deferred)))
-   (flycheck-mode . (lambda ()
-		      ;; Next checker check the first lsp -> flake8 -> pylint
-		      ;; Waring clause check the next only if dont have errors
-		      ;; If lsp dont have errors, check flake8, if lsp and flake8 dont have any eror
-		      ;; check using pylint.
-                      (flycheck-add-next-checker 'lsp '(warning . python-flake8))
-                      (flycheck-add-next-checker 'python-flake8 '(warning . python-pylint))
-                      (message "Added flycheck checkers.")))))
 
 (use-package lsp-ui
   :ensure
@@ -129,11 +92,6 @@
 ;; Activate tree-sitter globally (minor mode registered on every buffer)
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
-
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 
 ;; Always show diagnostics at the bottom, using 1/3 of the available space
@@ -159,6 +117,18 @@
          ("\\.app?$" . erlang-mode)
          ("\\.app.src?$" . erlang-mode)
          ("\\Emakefile" . erlang-mode)))
+
+(require 'prettier-js)
+(add-hook 'typescript-mode-hook 'prettier-js-mode)
+(setq prettier-js-args '(
+			 "--single-quote"          "true"
+			 "--trailing-comma"        "all";; "es5"
+			 "--bracket-spacing"       "true"
+			 "--semi"                  "true"
+			 "--print-width"           "120"
+			 "--tab-width"             "4" ;; "2"
+			 "--use-tabs"              "false"
+			 ))
 
 
 (require 'dashboard)
@@ -202,22 +172,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("9724b3abaf500b227faa036dcf817abed9764802835ba6e8d1e475c877205157" "2793a4c110b68c57c4c44c587a456381aa4eaed8fd7d1df4831b4f3d5f2005ab" default))
- '(ignored-local-variable-values
-   '((eval and buffer-file-name
-	   (not
-	    (eq major-mode 'package-recipe-mode))
-	   (or
-	    (require 'package-recipe-mode nil t)
-	    (let
-		((load-path
-		  (cons "../package-build" load-path)))
-	      (require 'package-recipe-mode nil t)))
-	   (package-recipe-mode))))
+   '("daa27dcbe26a280a9425ee90dc7458d85bd540482b93e9fa94d4f43327128077" default))
  '(package-selected-packages
-   '(ido-mode treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company))
- '(wakatime-api-key "#put waka token here")
- '(wakatime-cli-path "~/.wakatime/wakatime-cli"))
+   '(nerd-icons-ivy-rich nerd-icons-ibuffer nerd-icons-corfu lsp-mode envrc flymake-elixir all-the-icons-gnus nerd-icons-dired projectile-codesearch all-the-icons-completion nerd-icons-completion lean-mode yasnippet-lean yasnippet-capf yasnippet-classic-snippets yasnippet-snippets go treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company)))
 
-(put 'upcase-region 'disabled nil)
-(put 'downcase-region 'disabled nil)
+;;(put 'upcase-region 'disabled nil)
+;;(put 'downcase-region 'disabled nil)
