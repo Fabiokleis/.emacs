@@ -9,7 +9,9 @@
 ;;(set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
 ;;(set-face-attribute 'default nil :font "Hack NerdFont" :height 120)
 ;;(set-face-attribute 'default nil :font "MesloLGL Nerd Font" :height 120)
-
+(setq imagemagick-enabled-types t)
+(imagemagick-register-types)
+(setq image-use-external-converter t)
 (global-display-line-numbers-mode t)
 (setq make-backup-files nil)
 (setq column-number-mode t)
