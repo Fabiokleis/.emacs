@@ -3,8 +3,8 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-;;(set-face-attribute 'default nil :height 130)
-(set-face-attribute 'default nil :font "SourceCode Pro" :height 130)
+(set-face-attribute 'default nil :height 120)
+;;(set-face-attribute 'default nil :font "Source Sans 3" :height 130)
 ;;(set-face-attribute 'default nil :font "SF Mono" :height 130)
 ;;(set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
 ;;(set-face-attribute 'default nil :font "Hack NerdFont" :height 120)
@@ -45,7 +45,7 @@
 (ido-mode)
 
 ;;(require 'kanagawa-themes)
-
+(nyan-mode t)
 
 (setq kanagawa-themes-custom-colors '((bg "#2A2A37") (bg-m3 "#2A2A37")))
 (add-to-list 'load-path "~/.emacs.d/themes/kanagawa-emacs")
@@ -68,7 +68,8 @@
 (add-hook 'javascript-mode-hook 'lsp-deferred)
 (add-hook 'elixir-mode-hook 'lsp-deferred)
 (add-hook 'nix-mode-hook 'lsp-deferred)
-
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
 
 (defun lsp-go-install-save-hooks ()
   (add-hook 'before-save-hook #'lsp-format-buffer t t)
@@ -106,35 +107,10 @@
               (window-height   . 0.33)))
 
 
-(use-package erlang
-  :load-path ("/usr/lib64/erlang/lib/tools-3.5./emacs")
-  :mode (("\\.erl?$" . erlang-mode)
-         ("rebar\\.config$" . erlang-mode)
-         ("relx\\.config$" . erlang-mode)
-         ("sys\\.config\\.src$" . erlang-mode)
-         ("sys\\.config$" . erlang-mode)
-         ("\\.config\\.src?$" . erlang-mode)
-         ("\\.config\\.script?$" . erlang-mode)
-         ("\\.hrl?$" . erlang-mode)
-         ("\\.app?$" . erlang-mode)
-         ("\\.app.src?$" . erlang-mode)
-         ("\\Emakefile" . erlang-mode)))
-
-(require 'prettier-js)
-(add-hook 'typescript-mode-hook 'prettier-js-mode)
-(setq prettier-js-args '(
-			 "--single-quote"          "true"
-			 "--trailing-comma"        "all";; "es5"
-			 "--bracket-spacing"       "true"
-			 "--semi"                  "true"
-			 "--print-width"           "120"
-			 "--tab-width"             "4" ;; "2"
-			 "--use-tabs"              "false"
-			 ))
-
-
 (require 'dashboard)
 (dashboard-setup-startup-hook)
+
+(require 'multiple-cursors)
 
 (setq dashboard-startup-banner 'logo)
 ;; Value can be:
@@ -154,6 +130,38 @@
 (setq dashboard-center-content t)
 ;; vertically center content
 (setq dashboard-vertically-center-content t)
+
+
+(setq package-selected-packages '(lsp-mode yasnippet lsp-treemacs helm-lsp
+    projectile hydra flycheck company avy which-key helm-xref dap-mode))
+
+(when (cl-find-if-not #'package-installed-p package-selected-packages)
+  (package-refresh-contents)
+  (mapc #'package-install package-selected-packages))
+
+;; sample `helm' configuration use https://github.com/emacs-helm/helm/ for details
+(helm-mode)
+(require 'helm-xref)
+(define-key global-map [remap find-file] #'helm-find-files)
+(define-key global-map [remap execute-extended-command] #'helm-M-x)
+(define-key global-map [remap switch-to-buffer] #'helm-mini)
+
+(which-key-mode)
+(add-hook 'c-mode-hook 'lsp)
+(add-hook 'c++-mode-hook 'lsp)
+
+
+(setq gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 1024 1024)
+      treemacs-space-between-root-nodes nil
+      company-idle-delay 0.0
+      company-minimum-prefix-length 1
+      lsp-idle-delay 0.1)  ;; clangd is fast
+
+(with-eval-after-load 'lsp-mode
+  (add-hook 'lsp-mode-hook #'lsp-enable-which-key-integration)
+  (require 'dap-cpptools)
+  (yas-global-mode))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -176,7 +184,7 @@
  '(custom-safe-themes
    '("daa27dcbe26a280a9425ee90dc7458d85bd540482b93e9fa94d4f43327128077" default))
  '(package-selected-packages
-   '(image+ nerdtab all-the-icons-ivy nerd-icons-ivy-rich nerd-icons-ibuffer nerd-icons-corfu lsp-mode envrc flymake-elixir all-the-icons-gnus nerd-icons-dired projectile-codesearch all-the-icons-completion nerd-icons-completion lean-mode yasnippet-lean yasnippet-capf yasnippet-classic-snippets yasnippet-snippets go treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company)))
+   '(company-tabnine nyan-mode multiple-cursors pdf-tools image+ nerdtab all-the-icons-ivy nerd-icons-ivy-rich nerd-icons-ibuffer nerd-icons-corfu lsp-mode envrc flymake-elixir all-the-icons-gnus nerd-icons-dired projectile-codesearch all-the-icons-completion nerd-icons-completion lean-mode yasnippet-lean yasnippet-capf yasnippet-classic-snippets yasnippet-snippets go treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company)))
 
 ;;(put 'upcase-region 'disabled nil)
 ;;(put 'downcase-region 'disabled nil)
