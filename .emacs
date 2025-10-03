@@ -3,7 +3,8 @@
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
-(set-face-attribute 'default nil :height 120)
+;;(set-face-attribute 'default nil :height 120)
+(set-face-attribute 'default nil :font "SourceCode Pro" :height 125)
 ;;(set-face-attribute 'default nil :font "Source Sans 3" :height 130)
 ;;(set-face-attribute 'default nil :font "SF Mono" :height 130)
 ;;(set-face-attribute 'default nil :font "FiraCode NerdFont Propo" :height 120)
@@ -43,14 +44,21 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 (add-hook 'after-init-hook 'global-company-mode)
 (ido-mode)
-
+(add-hook 'prog-mode-hook 'hs-minor-mode)
 ;;(require 'kanagawa-themes)
 (nyan-mode t)
 
-(setq kanagawa-themes-custom-colors '((bg "#2A2A37") (bg-m3 "#2A2A37")))
-(add-to-list 'load-path "~/.emacs.d/themes/kanagawa-emacs")
-(require 'kanagawa-themes)
-(load-theme 'kanagawa-wave t)
+;;(setq kanagawa-themes-custom-colors '((bg "#2A2A37") (bg-m3 "#2A2A37")))
+;;(add-to-list 'load-path "~/.emacs.d/themes/kanagawa-emacs")
+;;(require 'kanagawa-themes)
+;;(load-theme 'kanagawa-dragon t)
+(use-package kanagawa-themes
+  :ensure t
+  :config
+  (load-theme 'kanagawa-wave t))
+
+(require 'treemacs)
+(global-set-key [f8] ' treemacs)
 
 ;; (use-package lsp-mode
 ;;   :ensure t
@@ -66,7 +74,9 @@
 (add-hook 'erlang-mode-hook #'lsp)
 (add-hook 'typescript-mode-hook 'lsp-deferred)
 (add-hook 'javascript-mode-hook 'lsp-deferred)
-(add-hook 'elixir-mode-hook 'lsp-deferred)
+;;(add-hook 'tsx-mode-hook #'lsp-deferred)
+;;(add-hook 'js-mode-hook #'lsp-deferred)
+;;(add-hook 'elixir-mode-hook 'lsp-deferred)
 (add-hook 'nix-mode-hook 'lsp-deferred)
 (add-hook 'c-mode-hook 'lsp)
 (add-hook 'c++-mode-hook 'lsp)
@@ -76,10 +86,32 @@
   (add-hook 'before-save-hook #'lsp-organize-imports t t))
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
+;; (use-package tide
+;;   :after lsp-mode
+;;   :hook (typescript-mode . tide-mode)
+;;   :config
+;;   (setq tide-tsserver-executable "tsserver")
+;;   (setq tide-format-on-save t) ;; Enable formatting on save
+;;   (setq tide-prettify-on-format t)) ;; Enable Prettier integration
 
-;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
-(add-hook 'elixir-mode-hook
-          (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
+;;(add-hook 'ts-mode-hook 'maybe-use-prettier)
+;;(add-hook 'web-mode-hook 'prettier-js-mode)
+(use-package lsp-mode
+  :ensure t
+  :config
+  (setq lsp-modeline-code-actions-segments '(count icon name))
+
+  :init
+  '(lsp-mode))
+
+
+;; (use-package elixir-mode
+;;   :ensure t
+;;   :custom
+;;   (lsp-elixir-server-command '("/home/fabioklies/Downloads/expert_linux_amd64")))
+;; ;; Create a buffer-local hook to run elixir-format on save, only when we enable elixir-mode.
+;; ;;(add-hook 'elixir-mode-hook
+;; ;;          (lambda () (add-hook 'before-save-hook 'elixir-format nil t)))
 
 (use-package lsp-ui
   :ensure
@@ -90,11 +122,12 @@
   (lsp-ui-doc-enable nil))
 
 				; Loading tree-sitter package
-(require 'tree-sitter-langs)
-(require 'tree-sitter)
+;;(require 'tree-sitter-langs)
+;;(require 'tree-sitter)
 ;; Activate tree-sitter globally (minor mode registered on every buffer)
-(global-tree-sitter-mode)
-(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;(global-tree-sitter-mode)
+;;(add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
+;;(add-to-list 'treesit-language-source-alist '(typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src")))
 
 
 ;; Always show diagnostics at the bottom, using 1/3 of the available space
@@ -163,6 +196,8 @@
   (require 'dap-cpptools)
   (yas-global-mode))
 
+(add-hook 'vterm-mode-hook (lambda () (read-only-mode -1)))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -182,9 +217,30 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("daa27dcbe26a280a9425ee90dc7458d85bd540482b93e9fa94d4f43327128077" default))
+   '("daa27dcbe26a280a9425ee90dc7458d85bd540482b93e9fa94d4f43327128077"
+     default))
  '(package-selected-packages
-   '(company-tabnine nyan-mode multiple-cursors pdf-tools image+ nerdtab all-the-icons-ivy nerd-icons-ivy-rich nerd-icons-ibuffer nerd-icons-corfu lsp-mode envrc flymake-elixir all-the-icons-gnus nerd-icons-dired projectile-codesearch all-the-icons-completion nerd-icons-completion lean-mode yasnippet-lean yasnippet-capf yasnippet-classic-snippets yasnippet-snippets go treemacs-all-the-icons tree-sitter-langs tree-sitter simple-mpc protobuf-mode dap-mode elixir-yasnippets wakatime-mode kanagawa-theme abyss-theme package-lint-flymake package-build package-lint autothemer which-key vterm rebecca-theme nix-mode mode-icons lsp-ui lsp-pyright ligature go-mode fontawesome erlang elixir-mode dashboard company)))
+   '(alchemist all-the-icons-completion all-the-icons-dired
+	       all-the-icons-gnus all-the-icons-ivy
+	       all-the-icons-nerd-fonts apheleia cpputils-cmake
+	       dap-mode dashboard delight docker-compose-mode
+	       dockerfile-mode dracula-theme elixir-yasnippets envrc
+	       erlang flycheck-elixir flymake flymake-elixir
+	       flymake-eslint github-theme gitignore-snippets
+	       gitlab-ci-mode gle-mode go go-mode helm-lsp helm-xref
+	       image+ kanagawa-themes lean-mode lsp-pyright lsp-ui
+	       lua-mode multiple-cursors neotree nerd-icons-completion
+	       nerd-icons-corfu nerd-icons-dired nerd-icons-ibuffer
+	       nerd-icons-ivy-rich nerdtab nyan-mode package-build
+	       package-lint page-break-lines prettier prettier-js
+	       prisma-ts-mode projectile-codesearch protobuf-mode
+	       rebecca-theme rustic svelte-mode tide toml-mode
+	       tree-mode tree-sitter-indent tree-sitter-langs
+	       treemacs-all-the-icons treemacs-icons-dired
+	       treemacs-magit treemacs-nerd-icons treesit-auto
+	       typescript-mode typespec-ts-mode uwu-theme vterm
+	       which-key yasnippet-capf yasnippet-classic-snippets
+	       yasnippet-lean yasnippet-snippets)))
 
 ;;(put 'upcase-region 'disabled nil)
 ;;(put 'downcase-region 'disabled nil)
